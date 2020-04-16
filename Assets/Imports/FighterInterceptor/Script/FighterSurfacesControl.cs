@@ -7,11 +7,7 @@ public class FighterSurfacesControl : MonoBehaviour
     public Transform rightElevator, leftElevator;
     public Transform rightFlap, leftFlap;
     public Transform rightRudder, leftRudder;
-    public float MRx, MRy, MRz;
-    public bool turnFlap;
-    public bool turnRudder;
     public float turnSpeed;
-    private float angleX;
 
     private const float MAX_ELEVATOR_ANGLE = 25;
     private const float MAX_FLAP_ANGLE = 45;
@@ -22,40 +18,39 @@ public class FighterSurfacesControl : MonoBehaviour
 	}
 	
 	void Update () {
-
-        MRx = Mathf.Clamp(MRx + Input.GetAxis("Pitch") * 0.05f, -1f, 1f);
-        MRz = Mathf.Clamp(MRz - Input.GetAxis("Roll") * 0.05f, -1f, 1f);
-        MRy = Mathf.Clamp(MRy + Input.GetAxis("Yaw") * 0.05f, -1f, 1f);
-
-        if (Input.GetKeyDown("f")) {
-            Toggle(turnFlap);
-        }
-
-
-        Toggle(turnRudder);
-
-        rightElevator.transform.localRotation = Quaternion.Euler(new Vector3((MRz + MRx) * MAX_ELEVATOR_ANGLE, 0, 0));
-        leftElevator.transform.localRotation = Quaternion.Euler(new Vector3((-MRz + MRx) * MAX_ELEVATOR_ANGLE, 0, 0));
-
+        TurnElevators();
         TurnRudder();
         TurnFlap();
     }
 
-    private void Toggle(bool toggle) {
-        if (!toggle) toggle = true; 
-        else toggle = false;
+    float ElevatorAngleLeft;
+    float ElevatorAngleRight;
+
+    private void TurnElevators() {
+        //rightElevator.transform.localRotation = Quaternion.Euler(new Vector3((MRz + MRx) * MAX_ELEVATOR_ANGLE, 0, 0));
+        //leftElevator.transform.localRotation = Quaternion.Euler(new Vector3((-MRz + MRx) * MAX_ELEVATOR_ANGLE, 0, 0));
+
+        ElevatorAngleLeft = Mathf.Lerp(ElevatorAngleLeft, (Input.GetAxis("Pitch") + -Input.GetAxis("Roll")) * 0.5f, turnSpeed * Time.deltaTime);
+        ElevatorAngleRight = Mathf.Lerp(ElevatorAngleRight, (Input.GetAxis("Pitch") + Input.GetAxis("Roll")) * 0.5f, turnSpeed * Time.deltaTime);
+
+        TranslateAngle(rightElevator, 0, ElevatorAngleLeft * MAX_ELEVATOR_ANGLE, 0);
+        TranslateAngle(leftElevator, -0, ElevatorAngleRight * MAX_ELEVATOR_ANGLE, 0);
     }
+
+    float RudderAngle;
 
     private void TurnRudder() {
-        int angleX = turnRudder ? 1 : 0;
-        TranslateAngle(rightRudder, 16, angleX * MRy * MAX_RUDDER_ANGLE, 107);
-        TranslateAngle(leftRudder, -16, angleX * MRy * MAX_RUDDER_ANGLE, 73);
+        RudderAngle = Mathf.Lerp(RudderAngle, Input.GetAxis("Yaw"), turnSpeed * Time.deltaTime);
+        TranslateAngle(rightRudder, 16, RudderAngle * MAX_RUDDER_ANGLE, 107);
+        TranslateAngle(leftRudder, -16, RudderAngle * MAX_RUDDER_ANGLE, 73);
     }
 
+    float FlapAngle;
+
     private void TurnFlap() {
-        angleX = Mathf.Lerp(angleX, turnFlap ? 1 : 0, turnSpeed * Time.deltaTime);
-        TranslateAngle(rightFlap, 6, angleX * MAX_FLAP_ANGLE, 5);
-        TranslateAngle(leftFlap, -6, angleX * MAX_FLAP_ANGLE, -5);
+        FlapAngle = Mathf.Lerp(FlapAngle, Input.GetAxis("Pitch"), turnSpeed * Time.deltaTime);
+        TranslateAngle(rightFlap, 6, FlapAngle * MAX_FLAP_ANGLE, 5);
+        TranslateAngle(leftFlap, -6, FlapAngle * MAX_FLAP_ANGLE, -5);
     }
 
     void TranslateAngle(Transform tr, float heading, float attitude, float bank) {
