@@ -18,20 +18,17 @@ public class FighterSurfacesControl : MonoBehaviour
 	}
 	
 	void Update () {
-        TurnElevators();
-        TurnRudder();
-        TurnFlap();
+        TurnElevators(Input.GetAxis("Pitch"), Input.GetAxis("Roll"));
+        TurnRudder(Input.GetAxis("Yaw"));
+        TurnFlap(Input.GetAxis("Pitch"));
     }
 
     float ElevatorAngleLeft;
     float ElevatorAngleRight;
 
-    private void TurnElevators() {
-        //rightElevator.transform.localRotation = Quaternion.Euler(new Vector3((MRz + MRx) * MAX_ELEVATOR_ANGLE, 0, 0));
-        //leftElevator.transform.localRotation = Quaternion.Euler(new Vector3((-MRz + MRx) * MAX_ELEVATOR_ANGLE, 0, 0));
-
-        ElevatorAngleLeft = Mathf.Lerp(ElevatorAngleLeft, (Input.GetAxis("Pitch") + -Input.GetAxis("Roll")) * 0.5f, turnSpeed * Time.deltaTime);
-        ElevatorAngleRight = Mathf.Lerp(ElevatorAngleRight, (Input.GetAxis("Pitch") + Input.GetAxis("Roll")) * 0.5f, turnSpeed * Time.deltaTime);
+    private void TurnElevators(float pitch, float roll) {
+        ElevatorAngleLeft = Mathf.Lerp(ElevatorAngleLeft, pitch + -roll, turnSpeed * Time.deltaTime);
+        ElevatorAngleRight = Mathf.Lerp(ElevatorAngleRight, pitch + roll, turnSpeed * Time.deltaTime);
 
         TranslateAngle(rightElevator, 0, ElevatorAngleLeft * MAX_ELEVATOR_ANGLE, 0);
         TranslateAngle(leftElevator, -0, ElevatorAngleRight * MAX_ELEVATOR_ANGLE, 0);
@@ -39,16 +36,18 @@ public class FighterSurfacesControl : MonoBehaviour
 
     float RudderAngle;
 
-    private void TurnRudder() {
-        RudderAngle = Mathf.Lerp(RudderAngle, Input.GetAxis("Yaw"), turnSpeed * Time.deltaTime);
+    private void TurnRudder(float yaw) {
+        RudderAngle = Mathf.Lerp(RudderAngle, yaw, turnSpeed * Time.deltaTime);
+
         TranslateAngle(rightRudder, 16, RudderAngle * MAX_RUDDER_ANGLE, 107);
         TranslateAngle(leftRudder, -16, RudderAngle * MAX_RUDDER_ANGLE, 73);
     }
 
     float FlapAngle;
 
-    private void TurnFlap() {
-        FlapAngle = Mathf.Lerp(FlapAngle, Input.GetAxis("Pitch"), turnSpeed * Time.deltaTime);
+    private void TurnFlap(float pitch) {
+        FlapAngle = Mathf.Lerp(FlapAngle, pitch, turnSpeed * Time.deltaTime);
+
         TranslateAngle(rightFlap, 6, FlapAngle * MAX_FLAP_ANGLE, 5);
         TranslateAngle(leftFlap, -6, FlapAngle * MAX_FLAP_ANGLE, -5);
     }

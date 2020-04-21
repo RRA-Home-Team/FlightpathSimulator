@@ -33,6 +33,6 @@ public class Plane : MonoBehaviour
     }
 
     public void AdjustYaw(float amount) {
-        transform.Rotate(new Vector3(0, amount, 0) * Time.deltaTime * Speed * 0.3f, Space.Self);
+        transform.Rotate(new Vector3(0, amount, 0) * Time.deltaTime * Speed * 0.5f, Space.Self);
     }
 }
