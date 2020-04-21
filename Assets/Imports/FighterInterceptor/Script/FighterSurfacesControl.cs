@@ -27,7 +27,7 @@ public class FighterSurfacesControl : MonoBehaviour
     float ElevatorAngleRight;
 
     private void TurnElevators(float pitch, float roll) {
-        ElevatorAngleLeft = Mathf.Lerp(ElevatorAngleLeft, pitch + -roll, turnSpeed * Time.deltaTime);
+        ElevatorAngleLeft = Mathf.Lerp(ElevatorAngleLeft, pitch - roll, turnSpeed * Time.deltaTime);
         ElevatorAngleRight = Mathf.Lerp(ElevatorAngleRight, pitch + roll, turnSpeed * Time.deltaTime);
 
         TranslateAngle(rightElevator, 0, ElevatorAngleLeft * MAX_ELEVATOR_ANGLE, 0);
