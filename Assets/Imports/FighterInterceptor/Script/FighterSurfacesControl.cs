@@ -12,10 +12,6 @@ public class FighterSurfacesControl : MonoBehaviour
     private const float MAX_ELEVATOR_ANGLE = 25;
     private const float MAX_FLAP_ANGLE = 45;
     private const float MAX_RUDDER_ANGLE = 30;
-
-    void Start () {
-		
-	}
 	
 	void Update () {
         TurnElevators(Input.GetAxis("Pitch"), Input.GetAxis("Roll"));
